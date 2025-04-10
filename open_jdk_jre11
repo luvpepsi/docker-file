@@ -6,8 +6,6 @@ LABEL org.opencontainers.image.description="OpenJDK 11 JRE runtime on Ubuntu 22.
 
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
-COPY java /opt/java
+COPY --chown=10001:10001 java /opt/java
 # 验证 JAVA
 RUN java -version
-WORKDIR /app
-ENTRYPOINT ["java"]
