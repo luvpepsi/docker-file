@@ -6,7 +6,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     libpcre3 libpcre3-dev \
     zlib1g zlib1g-dev \
     libssl-dev \
-    perl && rm -rf /var/lib/apt/lists/*
+    perl && apt-get clean  && rm -rf /var/lib/apt/lists/*
 
 # 复制源码和模块
 COPY nginx-1.22.1 /tmp/nginx-1.22.1
@@ -27,10 +27,22 @@ RUN cd /tmp/nginx-1.22.1 && \
 
 # 创建运行时镜像
 FROM hub.wpyun.com/khfw/ubuntu-zh:22.04
+ARG NGINX_UID=10001
+ARG NGINX_GID=10001
 
+# 修改 nginx 目录权限（只修改 /opt/nginx）
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/nginx_1.22.1"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="1.22.1"
+LABEL org.opencontainers.image.description="nginx_1.22.1 on Ubuntu 22.04"
 # 拷贝编译好的 nginx 到最终镜像
 COPY --from=builder /opt/nginx /opt/nginx
-RUN ln -s /opt/nginx/sbin/nginx /usr/sbin/nginx
+RUN groupadd -g ${NGINX_GID} nginx && \
+    useradd -u ${NGINX_UID} -g ${NGINX_GID} -s /sbin/nologin -M nginx && \
+    chown -R nginx:nginx /opt/nginx && \
+    ln -s /opt/nginx/sbin/nginx /usr/sbin/nginx
+
+USER nginx
 
 EXPOSE 80 443
 CMD ["nginx", "-g", "daemon off;"]
