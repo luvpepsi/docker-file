@@ -7,4 +7,23 @@ https://nginx.org/download/nginx-1.22.1.tar.gz
 https://developers.redhat.com/products/openjdk/download
 java-11-openjdk-11.0.25.0.9
 
-# 
+# activemq
+https://archive.apache.org/dist/activemq/5.14.0/apache-activemq-5.14.0-bin.tar.gz
+  # yaml 要点
+  # 放开端口61616 8161 监控端口
+  # 环境变量指定
+  # environment:
+   #　ACTIVEMQ_OPTS_MEMORY: "-Xms256m -Xmx512m"
+   #  ACTIVEMQ_OPTS: "-Dfoo=bar"
+   #  -javaagent:/opt/agent/jmx_prometheus_javaagent-0.20.0.jar=9404:/opt/agent/config.yaml
+  # 挂载文件
+    sed -i 's/10.0.0.4/'"${HOST_IP}"'/g' activemq.xml
+    
+    # 修改安全配置
+    sed -i.bak 's/^admin=admin/netstudy=zdsoft/' users.properties
+    sed -i.bak 's/^admins=admin/admins=netstudy/' groups.properties
+    sed -i 's/^activemq.username=system/activemq.username=netstudy/' credentials.properties
+    sed -i 's/^activemq.password=manager/activemq.password=zdsoft/' credentials.properties
+    sed -i 's/^guest.password=password/# guest.password=password/' credentials.properties
+    sed -i 's/^admin: admin, admin/netstudy: zdsoft, admin/' jetty-realm.properties
+    sed -ri.bak 's/(^.*\")(0\.0\.0\.0)(\".*$)/\1'"${HOST_IP}"'\3/' jetty.xml
