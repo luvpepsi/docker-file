@@ -1,4 +1,8 @@
-FROM docker.1ms.run/ubuntu:22.04
+FROM hub.wpyun.com/khfw/ubuntu:22.04
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/ubuntu22.04_cn"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="22.04"
+LABEL org.opencontainers.image.description="Chinese Env on Ubuntu 22.04"
 
 ENV DEBIAN_FRONTEND=noninteractive TZ=Asia/Shanghai
 
