@@ -1,0 +1,13 @@
+FROM hub.wpyun.com/khfw/ubuntu-zh:22.04
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/open_jdk_jre11"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="11.0.25"
+LABEL org.opencontainers.image.description="OpenJDK 11 JRE runtime on Ubuntu 22.04"
+
+ENV JAVA_HOME=/opt/java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+COPY java /opt/java
+# 验证 JAVA
+RUN java -version
+WORKDIR /app
+ENTRYPOINT ["java"]
