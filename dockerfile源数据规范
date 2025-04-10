@@ -1,1 +1,4 @@
-
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/open_jdk_jre11"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="11.0.25"
+LABEL org.opencontainers.image.description="OpenJDK 11 JRE runtime on Ubuntu 22.04"
