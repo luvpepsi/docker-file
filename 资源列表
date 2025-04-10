@@ -1,0 +1,10 @@
+# nginx:1.22.1
+https://github.com/openssl/openssl/releases/download/OpenSSL_1_1_1w/openssl-1.1.1w.tar.gz
+https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/08a395c66e42.zip
+https://nginx.org/download/nginx-1.22.1.tar.gz
+
+# openjdk:11-jre
+https://developers.redhat.com/products/openjdk/download
+java-11-openjdk-11.0.25.0.9
+
+# 
