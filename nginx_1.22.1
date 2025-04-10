@@ -1,0 +1,36 @@
+FROM hub.wpyun.com/khfw/ubuntu-zh:22.04 AS builder
+
+# 安装编译依赖
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    build-essential \
+    libpcre3 libpcre3-dev \
+    zlib1g zlib1g-dev \
+    libssl-dev \
+    perl && rm -rf /var/lib/apt/lists/*
+
+# 复制源码和模块
+COPY nginx-1.22.1 /tmp/nginx-1.22.1
+COPY nginx-goodies-nginx-sticky-module-ng-08a395c66e42 /tmp/nginx-goodies-nginx-sticky-module-ng-08a395c66e42
+COPY openssl-1.1.1w /tmp/openssl-1.1.1w
+
+# 编译 nginx
+RUN cd /tmp/nginx-1.22.1 && \
+    ./configure --prefix=/opt/nginx \
+    --with-http_stub_status_module \
+    --with-http_gzip_static_module \
+    --with-http_ssl_module \
+    --with-http_v2_module \
+    --with-stream \
+    --add-module=/tmp/nginx-goodies-nginx-sticky-module-ng-08a395c66e42 \
+    --with-openssl=/tmp/openssl-1.1.1w && \
+    make -j$(nproc) && make install
+
+# 创建运行时镜像
+FROM hub.wpyun.com/khfw/ubuntu-zh:22.04
+
+# 拷贝编译好的 nginx 到最终镜像
+COPY --from=builder /opt/nginx /opt/nginx
+RUN ln -s /opt/nginx/sbin/nginx /usr/sbin/nginx
+
+EXPOSE 80 443
+CMD ["nginx", "-g", "daemon off;"]
