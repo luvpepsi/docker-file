@@ -1,15 +1,16 @@
-# nginx:1.22.1
+########## nginx:1.22.1
 https://github.com/openssl/openssl/releases/download/OpenSSL_1_1_1w/openssl-1.1.1w.tar.gz
 https://bitbucket.org/nginx-goodies/nginx-sticky-module-ng/get/08a395c66e42.zip
 https://nginx.org/download/nginx-1.22.1.tar.gz
 
-# openjdk:11-jre
+########## openjdk:11-jre
 https://developers.redhat.com/products/openjdk/download
 java-11-openjdk-11.0.25.0.9
 
-# activemq
+########## activemq
 https://archive.apache.org/dist/activemq/5.14.0/apache-activemq-5.14.0-bin.tar.gz
   # yaml 要点
+  # 用户使用10001 activemq
   # 放开端口61616 8161 监控端口
   # 环境变量指定
   # environment:
@@ -27,3 +28,15 @@ https://archive.apache.org/dist/activemq/5.14.0/apache-activemq-5.14.0-bin.tar.g
     sed -i 's/^guest.password=password/# guest.password=password/' credentials.properties
     sed -i 's/^admin: admin, admin/netstudy: zdsoft, admin/' jetty-realm.properties
     sed -ri.bak 's/(^.*\")(0\.0\.0\.0)(\".*$)/\1'"${HOST_IP}"'\3/' jetty.xml
+########### streamsets
+streamsets-datacollector-kehou-3.22.2-20220328-1129.tgz
+# 开放端口38630
+# uid 10001 sdc
+# 环境变量指定
+  SDC_JAVA_OPTS="-Xms512m -Xmx1g -XX:-OmitStackTraceInFastThrow -Djdk.nio.maxCachedBufferSize=262144"
+  也可以挂载：/opt/datacollector/libexec/sdc-env.sh
+# 文件挂载
+  容器内部：/opt/datacollector/sdc-data/data
+
+# 密码修改
+  挂载： /opt/datacollector/sdc-data/conf/form-realm.properties
