@@ -1,0 +1,29 @@
+FROM hub.wpyun.com/khfw/openjdk:jre-11
+
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/streamsets_3.22.2"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="3.22.2"
+LABEL org.opencontainers.image.description="streamset datacollector use OpenJDK 11 JRE runtime on Ubuntu 22.04"
+# 设置变量
+ENV SDC_HOME=/opt/datacollector
+ENV PATH=$SDC_HOME/bin:$PATH
+
+ARG SDC_UID=10001
+ARG SDC_GID=10001
+
+# 拷贝本地准备好的二进制包
+COPY --chown=10001:10001 datacollector $SDC_HOME/
+
+# 添加用户 + 解压包 + 权限赋予
+RUN groupadd -g $SDC_GID sdc && \
+    useradd -u $SDC_UID -g $SDC_GID -s /sbin/nologin -M sdc
+
+USER sdc
+WORKDIR $SDC_HOME
+
+EXPOSE 38630
+
+# 可选：设置 JVM 参数
+ENV SDC_JAVA_OPTS="-Xms512m -Xmx1g -XX:-OmitStackTraceInFastThrow -Djdk.nio.maxCachedBufferSize=262144"
+
+CMD ["bin/streamsets", "dc"]
