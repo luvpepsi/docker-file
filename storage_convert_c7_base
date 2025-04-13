@@ -1,1 +1,37 @@
+FROM hub.wpyun.com/khfw/centos7-base:1.0
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/storage_convert_c7_base"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="7.9.2009"
+LABEL org.opencontainers.image.description="OpenJDK 11 JRE runtime on CenOS7.9 with convert env"
+ARG UID=10001
+ARG USRNAME=tomcat
 
+
+# 拷贝 JRE 和 Tomcat，设置归属
+COPY --chown=${UID}:${UID} jre /opt/jre
+#COPY --chown=${UID}:${UID} tomcat /opt/tomcat
+COPY convert_src.tar.gz /tmp
+# 添加构建脚本
+COPY build_all.sh /tmp/build_all.sh
+COPY chinese /tmp/chinese
+
+# 编译 & 安装所有组件
+RUN groupadd -g ${UID} tomcat && \
+    useradd -u ${UID} -g tomcat -s /sbin/nologin -m tomcat && \
+    chown ${UID}:${UID} /opt && \
+    /bin/bash /tmp/build_all.sh && \
+    yum clean all && \
+    rm -rf /var/cache/yum && \
+    rm -rf /tmp/* /var/tmp/*
+
+# 环境变量
+ENV SWF_HOME=/usr/local/bin/pdf2swf
+ENV XPDF_LANGUAGE_HOME=/usr/xpdf/chinese-simplified
+ENV FFMPEG_PATH=/usr/local/ffmpeg/bin/ffmpeg
+ENV MENCODER_PATH=/usr/local/mplayer/bin/mencoder
+ENV JAVA_HOME=/opt/jre
+ENV PATH="$JAVA_HOME/bin:$PATH"
+#ENV CATALINA_HOME=/opt/tomcat
+
+#WORKDIR /opt/tomcat
+#CMD ["/opt/tomcat/bin/catalina.sh", "run"]
