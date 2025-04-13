@@ -1,0 +1,23 @@
+FROM hub.wpyun.com/khfw/jdk:21 AS builder
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends binutils && \
+    rm -rf /var/lib/apt/lists/*
+RUN jlink \
+  --add-modules \
+    ALL-MODULE-PATH \
+  --output /opt/jre \
+  --no-header-files \
+  --no-man-pages \
+  --compress=2 \
+  --strip-debug
+
+FROM hub.wpyun.com/khfw/ubuntu-zh:22.04
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/jre_21"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="21.0.6"
+LABEL org.opencontainers.image.description="jre 21 on Ubuntu 22.04"
+
+ENV JAVA_HOME=/opt/jre
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+RUN chown 10001:10001 /opt
+COPY --chown=10001:10001 --from=builder /opt/jre /opt/jre
