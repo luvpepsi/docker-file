@@ -1,0 +1,23 @@
+FROM hub.wpyun.com/khfw/openjdk:jre-11
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/tomcat_ubuntu22.04_openjdk_jre11_general"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="9.0.104"
+LABEL org.opencontainers.image.description="tomcat9,OpenJDK 11 JRE runtime,Ubuntu 22.04"
+ARG UID=10001
+ARG GID=10001
+ARG USER=tomcat
+ARG TOMCAT_VERSION=9.0.104
+
+COPY --chown=${UID}:${UID} tomcat /opt/tomcat
+#COPY --chown=${UID}:${UID} app.war /opt/tomcat/webapps/ROOT.war
+
+RUN groupadd -g $GID $USER && \
+    useradd -u $UID -g $GID -s /sbin/nologin -m $USER
+
+ENV CATALINA_HOME=/opt/tomcat
+ENV TOMCAT_VERSION=${TOMCAT_VERSION}
+
+WORKDIR /opt/tomcat
+USER $USER
+EXPOSE 8080
+CMD ["/opt/tomcat/bin/catalina.sh", "run"]
