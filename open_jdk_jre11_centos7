@@ -1,0 +1,18 @@
+FROM hub.wpyun.com/khfw/centos7-base:1.0
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/open_jdk_jre11_centos7"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="11.0.25"
+LABEL org.opencontainers.image.description="OpenJDK 11 JRE runtime on centos7"
+
+ENV JAVA_HOME=/opt/java
+ENV PATH="${JAVA_HOME}/bin:${PATH}"
+RUN chown -R 10001:10001 /opt && \
+    mkdir -p /usr/share/fonts/chinese && \
+    yum install -y fontconfig && \
+    yum clean all && \
+    rm -rf /var/cache/yum && \
+    rm -rf /tmp/* /var/tmp/*
+
+COPY --chown=10001:10001 java /opt/java
+COPY chinese/* /usr/share/fonts/chinese/
+RUN fc-cache -fv
