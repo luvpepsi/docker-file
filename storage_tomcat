@@ -1,0 +1,26 @@
+FROM hub.wpyun.com/khfw/storage_convert_base:centos7-openjdk_jre11
+LABEL org.opencontainers.image.source="https://github.com/luvpepsi/docker-file/blob/main/storage_tomcat"
+LABEL org.opencontainers.image.authors="luvpepsi"
+LABEL org.opencontainers.image.version="9.0.104"
+LABEL org.opencontainers.image.description="tomcat for storage"
+
+ARG UID=10001
+ARG GID=10001
+ARG USER=tomcat
+ARG TOMCAT_VERSION=9.0.104
+
+
+COPY --chown=${UID}:${UID} tomcat /opt/tomcat
+#COPY --chown=${UID}:${UID} app.war /opt/tomcat/webapps/ROOT.war
+
+RUN yum install -y --setopt=tsflags=nodocs fontconfig && \
+    yum clean all && \
+    rm -rf /var/cache/yum && \
+    rm -rf /tmp/* /var/tmp/*
+
+ENV CATALINA_HOME=/opt/tomcat
+ENV TOMCAT_VERSION=${TOMCAT_VERSION}
+
+WORKDIR /opt/tomcat
+USER $USER
+EXPOSE 8080
