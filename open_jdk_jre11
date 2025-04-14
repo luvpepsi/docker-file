@@ -6,6 +6,12 @@ LABEL org.opencontainers.image.description="OpenJDK 11 JRE runtime on Ubuntu 22.
 
 ENV JAVA_HOME=/opt/java
 ENV PATH="${JAVA_HOME}/bin:${PATH}"
+RUN chown -R 10001:10001 /opt && \
+    mkdir -p /usr/share/fonts/truetype/custom && \
+    apt-get update && \
+    apt-get install -y --no-install-recommends fontconfig && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/* 
 COPY --chown=10001:10001 java /opt/java
-# 验证 JAVA
-RUN java -version
+COPY chinese/* /usr/share/fonts/truetype/custom/
+RUN fc-cache -fv
