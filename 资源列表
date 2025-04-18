@@ -36,7 +36,7 @@ streamsets-datacollector-kehou-3.22.2-20220328-1129.tgz
   SDC_JAVA_OPTS="-Xms512m -Xmx1g -XX:-OmitStackTraceInFastThrow -Djdk.nio.maxCachedBufferSize=262144"
   也可以挂载：/opt/datacollector/libexec/sdc-env.sh
 # 文件挂载
-  容器内部：/opt/datacollector/sdc-data/data
+  容器内部：/opt/datacollector/sdc-data/{data,log,conf}
 
 # 密码修改
-  挂载： /opt/datacollector/sdc-data/conf/form-realm.properties
+  覆盖挂载： /opt/datacollector/sdc-data/conf/form-realm.properties
